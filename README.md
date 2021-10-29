@@ -24,10 +24,6 @@ be found at [https://hexdocs.pm/pranxhow](https://hexdocs.pm/pranxhow).
 The tool may be used for downloading pranks as mp3 files as follows:
 
 ```sh
-iex(1)> Pranxhow.downloadPrank(12537)
-Downloading from https://compressed-pranks.fra1.digitaloceanspaces.com/12537.mp3?AWSAccessKeyId=foo&Expires=bar&Signature=baz to pranks/12537.mp3...                          
-Finished downloading
-:ok
-iex(2)>
+mix run download-pranks.iex 0
 ```
 

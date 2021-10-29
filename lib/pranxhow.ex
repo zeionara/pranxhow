@@ -20,11 +20,11 @@ defmodule Pranxhow do
     defstruct status: "", data: ""
   end
 
-  def downloadPrank(id, name) do
-    IO.puts(id)
+  def downloadPrank(id, name, session_key_index) do
+    # IO.puts(id)
     url = "https://prank.show/api/pranks/getLink?id=#{id}" 
     IO.puts(url)
-    headers = [authorization: Application.fetch_env!(:pranxhow, :session)]
+    headers = [authorization: Enum.at(Application.fetch_env!(:pranxhow, :session), session_key_index)]
     %HTTPoison.Response{body: body} = HTTPoison.get!(url, headers)
     link = Poison.decode!(body, as: !PrankLink)
     IO.puts(link["data"])
