@@ -25,13 +25,28 @@ defmodule Pranxhow do
     url = "https://prank.show/api/pranks/getLink?id=#{id}" 
     IO.puts(url)
     headers = [authorization: Enum.at(Application.fetch_env!(:pranxhow, :session), session_key_index)]
-    %HTTPoison.Response{body: body} = HTTPoison.get!(url, headers)
-    link = Poison.decode!(body, as: !PrankLink)
-    IO.puts(link["data"])
+    %HTTPoison.Response{body: body} = HTTPoison.get!(url, headers) # |> IO.inspect
+    IO.puts "Response:"
+    link = Poison.decode!(body, as: !PrankLink) |> IO.inspect structs: false
 
-
+    body = 
+      if link == %{"description" => "Пранк не найден или недоступен", "status" => "failed"} do
+        "no-such-prank"
+      else
+        %HTTPoison.Response{body: body} = HTTPoison.get!(link["data"], [], [recv_timeout: 3600_000]) # |> IO.inspect
+        body
+      end
+    
+    # body = 
+    #   case link["data"] do
+    #     # %{"status" => "failed", "description" => "Пранк не найден или недоступен"} ->
+    #     %{"description" => "Пранк не найден или недоступен", "status" => "failed"} -> 
+    #       "no-such-prank"
+    #     data -> 
+    #       %HTTPoison.Response{body: body} = HTTPoison.get!(data, [], [recv_timeout: 3600_000]) |> IO.inspect
+    #       body
+    #   end
     path = "pranks/#{name}.mp3"
-    %HTTPoison.Response{body: body} = HTTPoison.get!(link["data"], [], [recv_timeout: 3600_000])
     File.write(path, body)
     # 
     # IO.puts("Finished downloading prank #{id}")
